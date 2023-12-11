@@ -17,6 +17,8 @@ import org.apache.kafka.streams.kstream.Predicate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 
 @Component
@@ -75,13 +77,12 @@ public class StreamBranchingByPrice {
         schemaNode.put("type", "struct");
         schemaNode.set("fields", fieldsArray);
 
-        // 필드 추가
-        fieldsArray.add(createFieldNode("string", "t"));
-        fieldsArray.add(createFieldNode("string", "intag"));
-        fieldsArray.add(createFieldNode("string", "evt_time"));
-        fieldsArray.add(createFieldNode("string", "Uid"));
-        fieldsArray.add(createFieldNode("string", "gender"));
-        fieldsArray.add(createFieldNode("string", "total_price"));
+        // 로그 데이터의 필드 이름 동적 추출
+        Iterator<Map.Entry<String, JsonNode>> fields = value.fields();
+        while (fields.hasNext()) {
+            Map.Entry<String, JsonNode> field = fields.next();
+            fieldsArray.add(createFieldNode(field.getValue().getNodeType().toString().toLowerCase(), field.getKey()));
+        }
 
         schemaNode.put("optional", false);
         schemaNode.put("name", "log_data");
@@ -125,17 +126,5 @@ public class StreamBranchingByPrice {
                 }
             };
         }
-
-        /*
-        @Override
-        public void configure(Map<String, ?> configs, boolean isKey) {
-
-        }
-
-        @Override
-        public void close() {
-            // 자원 정리 로직
-        }
-        */
     }
 }
