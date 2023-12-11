@@ -20,7 +20,7 @@ public class StreamBranchingByPrice {
     @Value("${spring.kafka.bootstrap-servers}")
     private String kafkaServer;
 
-    public KafkaStreams createStreams() {
+    public KafkaStreams createBranchStreams() {
 
         StreamsBuilder builder = new StreamsBuilder();
         JsonSerde jsonSerde = new JsonSerde();

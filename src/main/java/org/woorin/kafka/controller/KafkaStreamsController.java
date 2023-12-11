@@ -18,7 +18,7 @@ public class KafkaStreamsController {
     @GetMapping("/branch/start")
     public String startBranch() {
         if (streams == null || !(streams.state() == KafkaStreams.State.RUNNING || streams.state() == KafkaStreams.State.REBALANCING)) {
-            streams = streamBranchingByPrice.createStreams(); // Kafka Streams 생성 및 분기 처리 시작
+            streams = streamBranchingByPrice.createBranchStreams(); // Kafka Streams 생성 및 분기 처리 시작
             streams.start();
             return "branching started";
         }
