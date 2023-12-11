@@ -1,6 +1,6 @@
-package org.woorin.kafka;
+package org.woorin.kafka.processing;
 
-import org.woorin.kafka.JsonUtils.JsonSerde;
+import org.woorin.kafka.processing.JsonUtils.JsonSerde;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -58,6 +58,5 @@ public class StreamBranchingByPrice {
 
         return new KafkaStreams(builder.build(), props);
     }
-
 
 }
