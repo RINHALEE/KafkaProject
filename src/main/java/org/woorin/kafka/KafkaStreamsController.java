@@ -1,4 +1,4 @@
-package org.example;
+package org.woorin.kafka;
 
 import org.apache.kafka.streams.KafkaStreams;
 import org.springframework.beans.factory.annotation.Autowired;

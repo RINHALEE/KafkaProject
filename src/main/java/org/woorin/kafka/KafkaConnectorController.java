@@ -1,4 +1,4 @@
-package org.example;
+package org.woorin.kafka;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
