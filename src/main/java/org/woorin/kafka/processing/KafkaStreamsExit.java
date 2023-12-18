@@ -29,9 +29,9 @@ public class KafkaStreamsExit {
         StreamsBuilder builder = new StreamsBuilder();
         Serde<JsonNode> jsonSerde = new JsonSerde();
 
-        KStream<String, JsonNode> inputStream = builder.stream("test1", Consumed.with(Serdes.String(), jsonSerde));
+        KStream<String, JsonNode> inputStream = builder.stream("web-log-topic", Consumed.with(Serdes.String(), jsonSerde));
 
-        String outputTopic = "test1exit-event-topic";
+        String outputTopic = "exit-event-topic";
 
         // 이탈 감지 조건 정의
         Predicate<String, JsonNode> deviationCondition = (key, value) -> {

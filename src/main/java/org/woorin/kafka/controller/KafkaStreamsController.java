@@ -14,7 +14,6 @@ import java.util.Map;
 
 @RestController
 public class KafkaStreamsController {
-
     private KafkaStreams Branchstreams;
     private KafkaStreams Exitstreams;
 
