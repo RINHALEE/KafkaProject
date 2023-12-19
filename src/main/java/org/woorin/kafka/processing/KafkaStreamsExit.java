@@ -45,7 +45,7 @@ public class KafkaStreamsExit {
                 .filter(deviationCondition)
                 .selectKey((key, value) -> value.get("Uid").asText());
 
-        // 새로운 키로 변경된 스트림을 exit-event-topic으로 전송
+        // 새로운 키로 변경된 스트림을 outputTopic으로 전송
         modifiedStream
                 .groupByKey(Grouped.with(Serdes.String(), jsonSerde)) //Uid를 기준으로 그룹화
                 .reduce((value1, value2) -> {
@@ -54,12 +54,13 @@ public class KafkaStreamsExit {
                     long time2 = value2.get("evt_time").asLong();
                     return (time1 > time2) ? value1 : value2;
                 });
-        modifiedStream.filter(deviationCondition).mapValues(JsonUtils::transformToSchemaFormat)
+        modifiedStream
+                .filter(deviationCondition).mapValues(JsonUtils::transformToSchemaFormat)
                 .to(outputTopic);
 
         // Kafka Streams 구성
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "exit-detection-application");
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "exit-event-application");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, jsonSerde.getClass().getName());
@@ -83,3 +84,4 @@ public class KafkaStreamsExit {
         }
     }
 }
+

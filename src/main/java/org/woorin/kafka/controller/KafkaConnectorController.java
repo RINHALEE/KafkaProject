@@ -78,7 +78,11 @@ public class KafkaConnectorController {
                         "auto.create": "true",
                         "auto.evolve": "true",
                         "delete.enabled": "false",
+                        "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+                        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+                        "value.converter.schemas.enable": "true",
                         "tasks.max": "1",
+                        "pk.mode": "none",
                         "topics.regex": "%s"
                     }
                 }
@@ -113,5 +117,4 @@ public class KafkaConnectorController {
         // HTTP 응답 상태 코드가 2xx인 경우 성공으로 간주
         return responseEntity.getStatusCode().is2xxSuccessful();
     }
-
 }
