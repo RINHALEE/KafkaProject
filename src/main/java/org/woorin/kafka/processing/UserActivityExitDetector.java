@@ -54,12 +54,11 @@ public class UserActivityExitDetector {
         private void punctuate(long timestamp) {
             List<String> toDelete = new ArrayList<>(); // 삭제할 키 목록
             List<KeyValue<String, JsonNode>> toForward = new ArrayList<>();
-            System.out.println("uidStore : " + uidStore);
 
             // 순회하면서 처리할 항목을 임시 리스트에 추가
             uidStore.all().forEachRemaining(entry -> {
                 long evtTimeMillis = extractEventTime(String.valueOf(entry.value));
-                System.out.println("evtTimeMillis : " + evtTimeMillis);
+                System.out.println("uidSore 순회 ");
 
                 // evtTime을 LocalDateTime으로 변환
                 LocalDateTime evtTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(evtTimeMillis), ZoneId.systemDefault());

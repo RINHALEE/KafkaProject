@@ -30,11 +30,6 @@ public class DynamicBranchingStreams {
 
         KStream<String, JsonNode> sourceStream = builder.stream(input_topic, Consumed.with(Serdes.String(), jsonSerde));
 
-        // 데이터 값이 제대로 들어오는지 확인 -- 마지막에 삭제
-        sourceStream.peek((key, value) -> {
-                System.out.println("data : " + value);
-        });
-
         if(criterion.equals("price")) {
             // 분기 조건 정의 (total_price : price값 이상, 미만)
             Predicate<String, JsonNode> isPriceAbove = (key, value) -> value.get("total_price").asLong() >= Long.parseLong(price);
