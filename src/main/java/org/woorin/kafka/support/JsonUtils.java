@@ -1,4 +1,4 @@
-package org.woorin.kafka.processing;
+package org.woorin.kafka.support;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,16 +1,13 @@
-package org.woorin.kafka.controller;
+package org.woorin.kafka.support;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
 
-@RestController
-public class KafkaConnectorController {
-
-    // Kafka Connect REST API 엔드포인트 URL
+@Service
+public class KafkaConnectorService {
     @Value("${kafka.connect.url}")
     private String kafkaConnectUrl;
 
@@ -23,29 +20,7 @@ public class KafkaConnectorController {
     @Value("${connection.password}")
     private String connectionPassword;
 
-    @PostMapping("/connectors")
-    public ResponseEntity<String> createConnector(@RequestBody Map<String, String> requestBody) {
-        String connectorName = requestBody.get("name");
-        String topicsRegex = requestBody.get("topics.regex");
-
-        if (connectorName == null || topicsRegex == null) {
-            return ResponseEntity.badRequest().body("Invalid request. 'name' and 'topicsRegex' are required.");
-        }
-
-        String connectorConfig = generateSinkConnectorConfig(connectorName, topicsRegex);
-
-        // Kafka Connect에 생성된 설정 파일 전달
-        boolean success = sendConnectorConfigToKafkaConnect(connectorConfig);
-
-        if (success) {
-            return ResponseEntity.ok("Connector created successfully");
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to create Connector");
-        }
-    }
-
-    private boolean sendConnectorConfigToKafkaConnect(String connectorConfig) {
+    public boolean sendConnectorConfigToKafkaConnect(String connectorConfig) {
         // HTTP 헤더 설정
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -65,7 +40,7 @@ public class KafkaConnectorController {
         return responseEntity.getStatusCode().is2xxSuccessful();
     }
 
-    private String generateSinkConnectorConfig(String connectorName, String topicsRegex) {
+    public String generateSinkConnectorConfig(String connectorName, String topicsRegex) {
         // Connector 구성을 생성하는 로직
         return String.format("""
                 {
@@ -88,20 +63,7 @@ public class KafkaConnectorController {
                 }
                 """, connectorName,connectionUrl,connectionUser,connectionPassword,topicsRegex);
     }
-
-    @DeleteMapping("/connectors/{connectorName}")
-    public ResponseEntity<String> deleteConnector(@PathVariable String connectorName) {
-        // Kafka Connect에 생성된 설정 파일 전달
-        boolean success = deleteConnectorFromKafkaConnect(connectorName);
-
-        if (success) {
-            return ResponseEntity.ok("Connector deleted successfully");
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to delete Connector");
-        }
-    }
-    private boolean deleteConnectorFromKafkaConnect(String connectorName) {
+    public boolean deleteConnectorFromKafkaConnect(String connectorName) {
         // Kafka Connect REST API 엔드포인트 URL
         String fullUrl = kafkaConnectUrl + "/" + connectorName;
 
