@@ -143,50 +143,5 @@ public class KafkaStreamsController {
             }
         }));
     }
-
-
-    ///////////
-
-    @GetMapping("/TestExit/start")
-    public String start2Exit() {
-        if (TestStreams != null) {
-            TestStreams.close();
-            TestStreams = null;
-        }
-
-        if (TestStreams ==null || (TestStreams.state() == KafkaStreams.State.RUNNING || TestStreams.state() == KafkaStreams.State.REBALANCING)) {
-            // 이탈감지
-            TestStreams = kafkaStreamsExit.createExitStreams(); // Kafka Streams 생성 및 이탈 감지 시작
-            TestStreams.start();
-        }
-
-        String connectorName = "exit_sink_connector";
-        String connectorConfig = kafkaConnectorService.generateSinkConnectorConfig(connectorName, "exit-event-topic");
-        createdConnectors.add(connectorName);
-
-        boolean success = kafkaConnectorService.sendConnectorConfigToKafkaConnect(connectorConfig);
-
-        if (success) {
-            return "Connector Name : " +connectorName + " created successfully\n"+
-                    "Exiting started";
-        } else {
-            return "Failed to create Connector";
-        }
-    }
-
-    // 이탈 감지 중지
-    @GetMapping("/TestExit/stop")
-    public String stop2Exit() {
-        if (TestStreams != null) {
-            TestStreams.close();
-
-            for (String connectorName : createdConnectors) {
-                kafkaConnectorService.deleteConnectorFromKafkaConnect(connectorName);
-            }
-            createdConnectors.clear(); // 커넥터 목록 초기화
-            return "Exiting stopped";
-        }
-        return "Streams are not running";
-    }
 }
 

@@ -64,7 +64,6 @@ public class DynamicBranchingStreams {
 
         // APPLICATION_CONFIG_ID 설정 - 분기처리 조건에 따라 다른 application.id를 사용하여 서로 다른 분기 처리 조건에 대해 독립적으로 Kafka Streams 애플리케이션을 운영
         String applicationId = "branch-app-" + System.currentTimeMillis();
-
         // Kafka Streams 구성
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationId);

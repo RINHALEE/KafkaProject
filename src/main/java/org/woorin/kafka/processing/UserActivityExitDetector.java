@@ -51,8 +51,9 @@ public class UserActivityExitDetector {
             context.schedule(Duration.ofSeconds(100), PunctuationType.WALL_CLOCK_TIME, this::punctuate);
         }
 
+        // 상태 저장소를 순회하며 이탈한 사용자를 감지
         private void punctuate(long timestamp) {
-            List<String> toDelete = new ArrayList<>(); // 삭제할 키 목록
+            List<String> toDelete = new ArrayList<>(); // 삭제할 키 목록 (이탈 감지된 키)
             List<KeyValue<String, JsonNode>> toForward = new ArrayList<>();
 
             // 순회하면서 처리할 항목을 임시 리스트에 추가
@@ -63,6 +64,7 @@ public class UserActivityExitDetector {
                 // evtTime을 LocalDateTime으로 변환
                 LocalDateTime evtTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(evtTimeMillis), ZoneId.systemDefault());
 
+                // 사용자의 마지막 활동으로부터 100초가 지난 경우, 해당 사용자는 이탈한 것으로 간주
                 if (evtTime != null && Duration.between(evtTime, LocalDateTime.now()).getSeconds() > 100) {
                     toForward.add(KeyValue.pair(entry.key, entry.value));
                     toDelete.add(entry.key); // 삭제할 키 목록에 추가
@@ -81,7 +83,7 @@ public class UserActivityExitDetector {
             return null; // 변환은 punctuate에서 수행하기 때문에 null 반환
         }
 
-        // Transformer 종료 시 호출: 필요한 경우 리소스 정리 수행
+        // Transformer 종료 시 호출
         @Override
         public void close() {
         }
