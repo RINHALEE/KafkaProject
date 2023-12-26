@@ -35,7 +35,7 @@ import java.util.Properties;
 
 @Component
 public class UserActivityExitDetector {
-    private static final Logger log = LoggerFactory.getLogger(KafkaStreamsExit.class);
+    private static final Logger log = LoggerFactory.getLogger(UserActivityExitDetector.class);
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String kafkaServer;
@@ -48,7 +48,7 @@ public class UserActivityExitDetector {
             this.context = context;
             this.uidStore = context.getStateStore("uidStore");
             // 정기적인 검사를 위한 스케줄 설정
-            context.schedule(Duration.ofSeconds(100), PunctuationType.WALL_CLOCK_TIME, this::punctuate);
+            context.schedule(Duration.ofSeconds(50), PunctuationType.WALL_CLOCK_TIME, this::punctuate);
         }
 
         // 상태 저장소를 순회하며 이탈한 사용자를 감지
@@ -59,7 +59,6 @@ public class UserActivityExitDetector {
             // 순회하면서 처리할 항목을 임시 리스트에 추가
             uidStore.all().forEachRemaining(entry -> {
                 long evtTimeMillis = extractEventTime(String.valueOf(entry.value));
-                System.out.println("uidSore 순회 ");
 
                 // evtTime을 LocalDateTime으로 변환
                 LocalDateTime evtTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(evtTimeMillis), ZoneId.systemDefault());

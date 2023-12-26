@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.woorin.kafka.processing.DynamicBranchingStreams;
-import org.woorin.kafka.processing.KafkaStreamsExit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,16 +20,12 @@ import java.util.Map;
 public class KafkaStreamsController {
     private KafkaStreams branchStreams;
     private KafkaStreams exitStreams;
-    private KafkaStreams TestStreams;
 
     @Autowired
     private KafkaConnectorService kafkaConnectorService;
 
     @Autowired
     private DynamicBranchingStreams dynamicBranchingStreams; // StreamBranchingByPrice 인스턴스 주입
-
-    @Autowired
-    private KafkaStreamsExit kafkaStreamsExit; // StreamBranchingByPrice 인스턴스 주입
 
     @Autowired
     private UserActivityExitDetector kafkaExitStreams;
